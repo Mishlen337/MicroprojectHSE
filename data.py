@@ -1,6 +1,26 @@
 import json
 import config
 from datetime import datetime
+import re
+
+
+def get_jitsiSession_data(email:str):
+    total_visits_count = 0
+    visits_dict = {}
+    postern_date = '2021-01'
+    with open(config.jitsiSession_path,"r") as file:
+        line = file.read()
+        data = json.loads(line)
+        try:
+            for item in data:
+                if 'project' in item['room'] and item['username'] == email:
+                    visits_dict.setdefault(postern_date, 0)
+                    visits_dict[postern_date] += 1
+                    total_visits_count +=1
+
+        except KeyError:
+            pass
+    return visits_dict,total_visits_count
 
 def get_jitsiClasses_data(email:str):
     total_visits_count = 0
@@ -12,9 +32,10 @@ def get_jitsiClasses_data(email:str):
             for item in data:
                 for auditorium in item['auditoriums']:
                     for aclass in auditorium['classes']:
-                        if ('ПС_Б2020_ИВТХ' in aclass['stream']) and (email in aclass['members']):
+                        if ('Проектный семинар (1 курс) (рус)' == aclass['discipline']) and (email in aclass['members']):
                             #visits_dict.setdefault(datetime.strptime(item['date'][0:7:], "%Y-%m"), 0)
                             #visits_dict[datetime.strptime(item['date'][0:7:], "%Y-%m")] +=1
+                            print(aclass['discipline'])
                             visits_dict.setdefault(item['date'][0:7:], 0)
                             visits_dict[item['date'][0:7:]] += 1
                             total_visits_count += 1
@@ -62,9 +83,10 @@ def get_zulip_data(name:str):
 
 #get_jitsiusers_data("maisakov@miem.hse.ru")
 #print(get_git_data("Михаил Исаков"))
-print(get_zulip_data('Михаил Исаков'))
-#print(get_jitsiClasses_data('maisakov@miem.hse.ru'))
+#print(get_zulip_data('Михаил Исаков'))
+print(get_jitsiClasses_data('maisakov@miem.hse.ru'))
 
+print(get_jitsiSession_data('pdblinov@miem.hse.ru'))
         
 
     
