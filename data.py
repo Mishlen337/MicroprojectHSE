@@ -56,6 +56,8 @@ def get_zulip_data(name:str):
             pass
         message_dict[str(datetime.isoformat(datetime.now(), sep='T'))] = current_message_count
         return message_dict,total_message_count
+
+
 fig = go.Figure()
 fig.add_trace(go.Scatter(x = list(get_zulip_data('Михаил Исаков')[0].keys()), y=list(get_zulip_data('Михаил Исаков')[0].values()),
                      line_shape='hv',
