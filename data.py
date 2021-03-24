@@ -1,77 +1,69 @@
 import json
 import config
-import plotly
-import html
-import plotly.graph_objects as go
 from datetime import datetime
-def get_jitsiusers_data(name:str)->int:
-    count = 0
-    strMe = name
-    with open(config.jitsiusers_path,"r") as file:
-        line = file.readline()
-        while line:
-            data = json.loads(line)
-            line = file.readline()
-            try:
-                if data["username"] == strMe:
-                    count+=1
-            except KeyError:
-                pass
-    return count
 
-def get_git_data(name:str)->bool:
-    user = False
-    with open(config.git_path,"r") as file:
-        total_message_count = 0
-        current_message_count = 0
-        message_dict = {}
+def get_jitsiClasses_data(email:str):
+    total_visits_count = 0
+    visits_dict = {}
+    with open(config.jitsiClasses_path,"r") as file:
         line = file.read()
         data = json.loads(line)
-        print(data[0].keys())
-        print(data[1])
+        try:
+            for item in data:
+                for auditorium in item['auditoriums']:
+                    for aclass in auditorium['classes']:
+                        if ('ПС_Б2020_ИВТХ' in aclass['stream']) and (email in aclass['members']):
+                            #visits_dict.setdefault(datetime.strptime(item['date'][0:7:], "%Y-%m"), 0)
+                            #visits_dict[datetime.strptime(item['date'][0:7:], "%Y-%m")] +=1
+                            visits_dict.setdefault(item['date'][0:7:], 0)
+                            visits_dict[item['date'][0:7:]] += 1
+                            total_visits_count += 1
+        except KeyError:
+            pass
+    return visits_dict,total_visits_count
+
+def get_git_data(name:str):
+    total_commits_count = 0
+    account_exists = False
+    commits_dict = {}
+    with open(config.git_path,"r") as file:
+        line = file.read()
+        data = json.loads(line)
         try:
             for item in data:
                 if item['name'] == name:
-                    print(len(item['projects']))
-                    #break
+                    account_exists = True
+                    for commits_month in item['commits_stats']:
+                        commits_dict[datetime.strptime(commits_month['endDate'][4:15], "%b %d %Y").strftime('%Y-%m')] = commits_month['commitCount']
+                        total_commits_count += commits_month['commitCount']
         except KeyError:
             pass
-        return message_dict,total_message_count
+        return commits_dict,total_commits_count,account_exists
+
 
 def get_zulip_data(name:str):
-    total_message_count = 0
-    current_message_count = 0
-    message_dict = {'2021-01-01': 0}
+    total_messages_count = 0
+    #current_message_count = 0
+    account_exists = False
+    messages_dict = {}
     with open(config.zulip_path,"r") as file:
         line = file.read()
         data = json.loads(line)       
         try:
             for item in data:
                 if item['full_name'] == name:
-                    total_message_count = len(item['messages'])
-                    for message in item['messages']:
-                        current_message_count += 1       
-                        message_dict[message['timestamp']] = current_message_count
+                    account_exists = True
+                    for messages_month in item['stats']:
+                        messages_dict[datetime.strptime(messages_month['endDate'][4:15], "%b %d %Y").strftime('%Y-%m')] = messages_month['messageCount']
+                        total_messages_count += messages_month['messageCount']
         except KeyError:
             pass
-        message_dict[str(datetime.isoformat(datetime.now(), sep='T'))] = current_message_count
-        return message_dict,total_message_count
-
-
-fig = go.Figure()
-fig.add_trace(go.Scatter(x = list(get_zulip_data('Михаил Исаков')[0].keys()), y=list(get_zulip_data('Михаил Исаков')[0].values()),
-                     line_shape='hv',
-                    name='lines'))
-
-fig.update_layout(title='Activity in MIEM Services',
-                   xaxis_title='Time',
-                   yaxis_title='Amount')
-plotly.offline.plot(fig, include_plotlyjs=False, output_type='div')
-fig.show()
+        return messages_dict,total_messages_count,account_exists
 
 #get_jitsiusers_data("maisakov@miem.hse.ru")
 #print(get_git_data("Михаил Исаков"))
 print(get_zulip_data('Михаил Исаков'))
+#print(get_jitsiClasses_data('maisakov@miem.hse.ru'))
 
         
 
