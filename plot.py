@@ -10,7 +10,6 @@ import config
 
 def form_html_plot():
     #initilize figure object
-
     fig = go.Figure()
     zulip_data = get_zulip_data(config.name)
     git_data = get_git_data(config.name)
@@ -19,7 +18,7 @@ def form_html_plot():
 
     
 
-    fig.add_trace(go.Bar(name = 'Zulip Activity', x = list(zulip_data[0].keys()), y = list(zulip_data[0].values()),text=list(zulip_data[0].values()), textposition='auto'))
+    fig.add_trace(go.Bar(name = 'Zulip Activity',  x = list(zulip_data[0].keys()), y = list(zulip_data[0].values()),text=list(zulip_data[0].values()), textposition='auto'))
     
     fig.add_trace(go.Bar(name = 'GitLab Activity', x = list(git_data[0].keys()), y = list(git_data[0].values()),text=list(git_data[0].values()), textposition='auto'))
 
@@ -54,7 +53,7 @@ def form_html_plot():
 
         with a.body():
             a.append(plotly.offline.plot(fig, include_plotlyjs=False, output_type='div'))
-            with a.font(size  = '5', face="Courier New, monospace", color = '#2a3f5f'):
+            with a.font(size  = '3', face="Courier New, monospace", color = '#2a3f5f'):
                 with a.table( align = 'center',  style = 'border-spacing: 100px 0px'):
                     with a.tr(klass='header_row'):
                         a.th(_t='Name of the service')
@@ -86,4 +85,3 @@ def form_html_plot():
     html = str(a)
     with open(config.html_path, 'w') as f:
         f.write(str(html))
-

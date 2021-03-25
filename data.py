@@ -74,13 +74,3 @@ def get_zulip_data(name:str):
             pass
         return messages_dict,total_messages_count,account_exists
 
-#get_jitsiusers_data("maisakov@miem.hse.ru")
-#print(get_git_data("Михаил Исаков"))
-#print(get_zulip_data('Михаил Исаков'))
-#print(get_jitsiClasses_data('maisakov@miem.hse.ru'))
-
-#print(get_jitsiSession_data('pdblinov@miem.hse.ru'))
-        
-
-    
-
