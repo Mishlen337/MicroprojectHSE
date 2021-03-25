@@ -1,9 +1,6 @@
 import json
 import config
 from datetime import datetime
-import re
-
-
 def get_jitsiSession_data(email:str):
     total_visits_count = 0
     visits_dict = {}
@@ -33,9 +30,6 @@ def get_jitsiClasses_data(email:str):
                 for auditorium in item['auditoriums']:
                     for aclass in auditorium['classes']:
                         if ('Проектный семинар (1 курс) (рус)' == aclass['discipline']) and (email in aclass['members']):
-                            #visits_dict.setdefault(datetime.strptime(item['date'][0:7:], "%Y-%m"), 0)
-                            #visits_dict[datetime.strptime(item['date'][0:7:], "%Y-%m")] +=1
-                            print(aclass['discipline'])
                             visits_dict.setdefault(item['date'][0:7:], 0)
                             visits_dict[item['date'][0:7:]] += 1
                             total_visits_count += 1
@@ -64,7 +58,6 @@ def get_git_data(name:str):
 
 def get_zulip_data(name:str):
     total_messages_count = 0
-    #current_message_count = 0
     account_exists = False
     messages_dict = {}
     with open(config.zulip_path,"r") as file:
@@ -84,9 +77,9 @@ def get_zulip_data(name:str):
 #get_jitsiusers_data("maisakov@miem.hse.ru")
 #print(get_git_data("Михаил Исаков"))
 #print(get_zulip_data('Михаил Исаков'))
-print(get_jitsiClasses_data('maisakov@miem.hse.ru'))
+#print(get_jitsiClasses_data('maisakov@miem.hse.ru'))
 
-print(get_jitsiSession_data('pdblinov@miem.hse.ru'))
+#print(get_jitsiSession_data('pdblinov@miem.hse.ru'))
         
 
     
