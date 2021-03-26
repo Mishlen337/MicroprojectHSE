@@ -3,10 +3,12 @@ from data import get_zulip_data, get_git_data, get_jitsiClasses_data, get_jitsiS
 import config
 from cult_grade import cult_grade
 
+
 import plotly.offline
 import plot 
 from airium import Airium
 import config
+from datetime import datetime
 
 def form_html_plot():
     #initilize figure object
@@ -81,6 +83,8 @@ def form_html_plot():
                         a.td(_t='-', align = 'center')
                 with a.h3(klass='main_header', align = 'center'):
                     a(f"Activity grade:  {cult_grade(zulip_data, git_data,jitsiClasses_data,jitsiSession_data)}" )
+                with a.div(align = 'center'):
+                    a(f"Данные актуальны на {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
                     
     html = str(a)
     with open(config.html_path, 'w') as f:
